@@ -1,0 +1,4 @@
+[submodule "ext/tinydtls"]
+	path = ext/tinydtls
+	url = https://gitee.com/esp-submodules/tinydtls.git
+    ignore = dirty

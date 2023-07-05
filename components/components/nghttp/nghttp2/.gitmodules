@@ -1,0 +1,7 @@
+[submodule "third-party/mruby"]
+	path = third-party/mruby
+	url = https://gitee.com/esp-submodules/mruby
+[submodule "third-party/neverbleed"]
+	path = third-party/neverbleed
+	url = https://gitee.com/esp-submodules/neverbleed.git
+	branch = openssl111fix
