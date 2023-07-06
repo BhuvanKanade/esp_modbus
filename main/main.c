@@ -42,9 +42,9 @@ static const int RX_BUF_SIZE = 1024;
 void app_main(void)
 {
     init();
-    xTaskCreate(blink_task, "blink_task", 1024*2, NULL, tskIDLE_PRIORITY, NULL);
-    xTaskCreate(rx_task, "uart_rx_task", 1024*2, NULL, configMAX_PRIORITIES, NULL);
-    xTaskCreate(tx_task, "uart_tx_task", 1024*2, NULL, configMAX_PRIORITIES-1, NULL);
+    xTaskCreatePinnedToCore(blink_task, "blink_task", 1024*2, NULL, tskIDLE_PRIORITY, NULL, tskNO_AFFINITY);
+    xTaskCreatePinnedToCore(rx_task, "uart_rx_task", 1024*2, NULL, configMAX_PRIORITIES, NULL, 1);
+    xTaskCreatePinnedToCore(tx_task, "uart_tx_task", 1024*2, NULL, configMAX_PRIORITIES-1, NULL, tskNO_AFFINITY);
 }
 
 
@@ -77,7 +77,7 @@ static void blink_task(void *arg)
         
         /* stak monitor */
         uint32_t stack_high_size_free = uxTaskGetStackHighWaterMark(NULL);
-        ESP_LOGI(BLINK_TASK_TAG, "Stack high Water mark = %d", stack_high_size_free);
+        ESP_LOGI(BLINK_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
     }
 
     vTaskDelete( NULL );
@@ -95,6 +95,10 @@ static void rx_task(void *arg)
             data[rxBytes] = 0;
             ESP_LOGI(RX_TASK_TAG, "Read %d bytes: '%s'", rxBytes, data);
             ESP_LOG_BUFFER_HEXDUMP(RX_TASK_TAG, data, rxBytes, ESP_LOG_INFO);
+
+            /* stak monitor */
+            uint32_t stack_high_size_free = uxTaskGetStackHighWaterMark(NULL);
+            ESP_LOGI(RX_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
         }
     }
     free(data);
@@ -121,7 +125,7 @@ static void tx_task(void *arg)
 
         /* stak monitor */
         uint32_t stack_high_size_free = uxTaskGetStackHighWaterMark(NULL);
-        ESP_LOGI(TX_TASK_TAG, "Stack high Water mark = %d", stack_high_size_free);
+        ESP_LOGI(TX_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
     }
 
     vTaskDelete( NULL );
