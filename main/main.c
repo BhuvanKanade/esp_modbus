@@ -44,7 +44,7 @@ void app_main(void)
     init();
     xTaskCreatePinnedToCore(blink_task, "blink_task", 1024*2, NULL, tskIDLE_PRIORITY, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(rx_task, "uart_rx_task", 1024*2, NULL, configMAX_PRIORITIES, NULL, 1);
-    xTaskCreatePinnedToCore(tx_task, "uart_tx_task", 1024*2, NULL, configMAX_PRIORITIES-1, NULL, tskNO_AFFINITY);
+    xTaskCreatePinnedToCore(tx_task, "uart_tx_task", 1024*2, NULL, configMAX_PRIORITIES-20, NULL, tskNO_AFFINITY);
 }
 
 
@@ -61,11 +61,8 @@ static void blink_task(void *arg)
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
     static const char *BLINK_TASK_TAG = "BLINKING_TASK";
 
-    esp_log_level_set(BLINK_TASK_TAG, ESP_LOG_DEBUG);
+    // esp_log_level_set(BLINK_TASK_TAG, ESP_LOG_INFO);
     ESP_LOGI(BLINK_TASK_TAG, "In before superloop");
-    
-
-    esp_log_level_set(BLINK_TASK_TAG, ESP_LOG_INFO);
 
     while(1) {
         gpio_set_level(BLINK_GPIO, 0);
@@ -77,7 +74,7 @@ static void blink_task(void *arg)
         
         /* stak monitor */
         uint32_t stack_high_size_free = uxTaskGetStackHighWaterMark(NULL);
-        ESP_LOGI(BLINK_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
+        ESP_LOGD(BLINK_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
     }
 
     vTaskDelete( NULL );
@@ -87,7 +84,7 @@ static void blink_task(void *arg)
 static void rx_task(void *arg)
 {
     static const char *RX_TASK_TAG = "RX_TASK";
-    esp_log_level_set(RX_TASK_TAG, ESP_LOG_INFO);
+    // esp_log_level_set(RX_TASK_TAG, ESP_LOG_INFO);
     uint8_t* data = (uint8_t*) malloc(RX_BUF_SIZE+1);
     while (1) {
         const int rxBytes = uart_read_bytes(UART_NUM_0, data, RX_BUF_SIZE, 1000 / portTICK_RATE_MS);
@@ -98,7 +95,7 @@ static void rx_task(void *arg)
 
             /* stak monitor */
             uint32_t stack_high_size_free = uxTaskGetStackHighWaterMark(NULL);
-            ESP_LOGI(RX_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
+            ESP_LOGD(RX_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
         }
     }
     free(data);
@@ -118,14 +115,14 @@ int sendData(const char* logName, const char* data)
 static void tx_task(void *arg)
 {
     static const char *TX_TASK_TAG = "TX_TASK";
-    esp_log_level_set(TX_TASK_TAG, ESP_LOG_INFO);
+    // esp_log_level_set(TX_TASK_TAG, ESP_LOG_INFO);
     while (1) {
         sendData(TX_TASK_TAG, "Hello world \n");
         vTaskDelay(2000 / portTICK_PERIOD_MS);
 
         /* stak monitor */
         uint32_t stack_high_size_free = uxTaskGetStackHighWaterMark(NULL);
-        ESP_LOGI(TX_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
+        ESP_LOGD(TX_TASK_TAG, "Stack high Water mark = %d ; running on core = %d", stack_high_size_free, xPortGetCoreID());
     }
 
     vTaskDelete( NULL );
