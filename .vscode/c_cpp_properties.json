@@ -16,7 +16,8 @@
                     "C:/Data/Automation/esp_modbus/components/components",
                     "${config:idf.espAdfPath}/components/**",
                     "${config:idf.espAdfPathWin}/components/**",
-                    "${workspaceFolder}"
+                    "${workspaceFolder}",
+                    "${workspaceFolder}/**"
                 ],
                 "limitSymbolsToIncludedHeaders": false
             }

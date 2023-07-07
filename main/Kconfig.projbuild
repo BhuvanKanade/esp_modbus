@@ -20,5 +20,14 @@ menu "Example Configuration"
             LED Blink rate number to blink on and off.
 
             Value is in milli Seconds rangng from 10mS to 5Sec
+
+
+    config STORE_HISTORY
+        bool "Store command history in flash"
+        default y
+        help
+            Linenoise line editing library provides functions to save and load
+            command history. If this option is enabled, initalizes a FAT filesystem
+            and uses it to store command history.
             
 endmenu

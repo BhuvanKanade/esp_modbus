@@ -19,7 +19,15 @@
         "task.h": "c",
         "system.h": "c",
         "core.h": "c",
-        "hal.h": "c"
+        "hal.h": "c",
+        "esp_err.h": "c",
+        "uart_select.h": "c",
+        "uart.h": "c",
+        "*.inc": "c",
+        "esp_vfs_fat.h": "c",
+        "cmd_decl.h": "c",
+        "cmd_system.h": "c",
+        "cmd_nvs.h": "c"
     },
     "C_Cpp.intelliSenseEngineFallback": "enabled"
 }
