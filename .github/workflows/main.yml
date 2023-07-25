@@ -1,16 +1,14 @@
-name: Definition of Done
-on:
-  pull_request:
-    types: [opened, edited]
+on: [pull_request_target]
 
 jobs:
-  check-dod:
-    runs-on: ubuntu-20.04
+  checklist_job:
+    runs-on: ubuntu-latest
+    name: Checklist job
     steps:
-      - name: Clone Repo
-        uses: actions/checkout@v3
-      - name: Check DoD
-        uses: platisd/definition-of-done@master
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Checklist
+        uses: wyozi/contextual-qa-checklist-action@master
         with:
-          dod_yaml: 'dod.yaml'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          # See options documentation below
